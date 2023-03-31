@@ -1,7 +1,7 @@
 import re
 
 
-def parse_underscores(curr):
+def parse_underscores(curr: str):
     while m := re.match('(.*)__(.*?)__(.*)', curr):
         curr = m.group(1) + '<strong>' + m.group(2) + '</strong>' + m.group(3)
     # these are coupled - parsing __ must precede _
@@ -10,19 +10,16 @@ def parse_underscores(curr):
     return curr
 
 
-def format_list_item(curr):
-    return '<li>' + curr + '</li>'
-
-# returns header level - 0 if it isn't a header
-
-
-def count_header_level(line):
+def count_header_level(line: str):
+    """ 
+    returns header level - 0 if it isn't a header
+    """
     level = len(line) - len(line.lstrip('#'))
     # level > 6 is invalid so treat it as a non-header
     return level % 7
 
 
-def parse(markdown):
+def parse(markdown: str):
     lines = markdown.split('\n')
     res = ''
     in_list = False
@@ -33,7 +30,7 @@ def parse(markdown):
             line = '<h' + str(header_level) + '>' + \
                 line[header_level + 1:] + '</h' + str(header_level) + '>'
         elif m := re.match(r'\* (.*)', line):
-            line = format_list_item(m.group(1))
+            line = f'<li>{m.group(1)}</li>'
             if not in_list:
                 in_list = True
                 line = '<ul>' + line
