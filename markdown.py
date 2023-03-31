@@ -3,10 +3,10 @@ from typing import Optional
 
 
 def parse_underscores(curr: str) -> str:
-    while m := re.match('(.*)__(.*?)__(.*)', curr):
+    while m := re.match('(.*)__(.+?)__(.*)', curr):
         curr = m.group(1) + '<strong>' + m.group(2) + '</strong>' + m.group(3)
     # these are coupled - parsing __ must precede _
-    while m := re.match('(.*)_(.*?)_(.*)', curr):
+    while m := re.match('(.*)_(.+?)_(.*)', curr):
         curr = m.group(1) + '<em>' + m.group(2) + '</em>' + m.group(3)
     return curr
 
