@@ -1,7 +1,8 @@
 import re
+from typing import Optional
 
 
-def parse_underscores(curr: str):
+def parse_underscores(curr: str) -> str:
     while m := re.match('(.*)__(.*?)__(.*)', curr):
         curr = m.group(1) + '<strong>' + m.group(2) + '</strong>' + m.group(3)
     # these are coupled - parsing __ must precede _
@@ -9,16 +10,23 @@ def parse_underscores(curr: str):
         curr = m.group(1) + '<em>' + m.group(2) + '</em>' + m.group(3)
     return curr
 
+
+def parse_header(curr: str) -> Optional[str]:
+    if m := re.match(r'(#+) (.*)', curr):
+        header_size = len(m.group(1))
+        if header_size <= 6:
+            return f'<h{header_size}>{m.group(2)}</h{header_size}>'
+    return None
+
+
 def parse(markdown: str):
     lines = markdown.split('\n')
     res = ''
     in_list = False
     for line in lines:
         line = parse_underscores(line)
-        nonheader = line.lstrip('#')
-        header_len = len(line) - len(nonheader)
-        if header_len in range(1, 7):
-            line = f'<h{header_len}>' + nonheader.lstrip() + f'</h{header_len}>'
+        if header := parse_header(line):
+            line = header
         elif m := re.match(r'\* (.*)', line):
             line = f'<li>{m.group(1)}</li>'
             if not in_list:
