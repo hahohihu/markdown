@@ -1,6 +1,18 @@
 import re
 from typing import Optional
 
+"""
+Refactoring notes in broad strokes:
+1. Got rid of major duplication
+2. Extracted some functions
+3. Converted boolean state into implicit program state
+4. Generalized the header parsing (of dubious utility admittedly)
+5. Simplified control flow
+6. Added some type hints
+
+Non-refactoring:
+1. Fixed a bug in the original code where only one pair of underscores could be correctly parsed
+"""
 
 def parse_underscores(curr: str) -> str:
     while m := re.match('(.*)__(.+?)__(.*)', curr):
