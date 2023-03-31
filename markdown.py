@@ -1,15 +1,20 @@
 import re
 
+def format_bold(curr):
+    m = re.match('(.*)__(.*)__(.*)', curr)
+    if m:
+        curr = m.group(1) + '<strong>' + m.group(2) + '</strong>' + m.group(3)
+    return curr
+
+def format_italic(curr):
+    m = re.match('(.*)_(.*)_(.*)', curr)
+    if m:
+        curr = m.group(1) + '<em>' + m.group(2) + '</em>' + m.group(3)
+    return curr
 
 def format_list_item(curr):
-    m1 = re.match('(.*)__(.*)__(.*)', curr)
-    if m1:
-        curr = m1.group(1) + '<strong>' + \
-            m1.group(2) + '</strong>' + m1.group(3)
-    m1 = re.match('(.*)_(.*)_(.*)', curr)
-    if m1:
-        curr = m1.group(1) + '<em>' + m1.group(2) + \
-            '</em>' + m1.group(3)
+    curr = format_bold(curr)
+    curr = format_italic(curr)
     return '<li>' + curr + '</li>'
 
 def parse(markdown):
@@ -45,12 +50,8 @@ def parse(markdown):
         m = re.match('<h|<ul|<p|<li', line)
         if not m:
             line = '<p>' + line + '</p>'
-        m = re.match('(.*)__(.*)__(.*)', line)
-        if m:
-            line = m.group(1) + '<strong>' + m.group(2) + '</strong>' + m.group(3)
-        m = re.match('(.*)_(.*)_(.*)', line)
-        if m:
-            line = m.group(1) + '<em>' + m.group(2) + '</em>' + m.group(3)
+        line = format_bold(line)
+        line = format_italic(line)
         if in_list_append:
             line = '</ul>' + line
             in_list_append = False
