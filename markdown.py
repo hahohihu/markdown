@@ -2,18 +2,12 @@ import re
 
 
 def format_list_item(curr):
-    is_bold = False
-    is_italic = False
     m1 = re.match('(.*)__(.*)__(.*)', curr)
     if m1:
-        is_bold = True
-    m1 = re.match('(.*)_(.*)_(.*)', curr)
-    if m1:
-        is_italic = True
-    if is_bold:
         curr = m1.group(1) + '<strong>' + \
             m1.group(2) + '</strong>' + m1.group(3)
-    if is_italic:
+    m1 = re.match('(.*)_(.*)_(.*)', curr)
+    if m1:
         curr = m1.group(1) + '<em>' + m1.group(2) + \
             '</em>' + m1.group(3)
     return '<li>' + curr + '</li>'
