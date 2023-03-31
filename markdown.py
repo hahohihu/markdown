@@ -12,24 +12,21 @@ def format_list_item(curr):
     curr = parse_underscores(curr)
     return '<li>' + curr + '</li>'
 
+# returns header level - 0 if it isn't a header
+def count_header_level(line):
+    level = len(line) - len(line.lstrip('#'))
+    # level > 6 is invalid so treat it as a non-header
+    return level % 7
+
 def parse(markdown):
     lines = markdown.split('\n')
     res = ''
     in_list = False
     in_list_append = False
     for line in lines:
-        if re.match('###### (.*)', line) is not None:
-            line = '<h6>' + line[7:] + '</h6>'
-        elif re.match('##### (.*)', line) is not None:
-            line = '<h5>' + line[6:] + '</h5>'
-        elif re.match('#### (.*)', line) is not None:
-            line = '<h4>' + line[5:] + '</h4>'
-        elif re.match('### (.*)', line) is not None:
-            line = '<h3>' + line[4:] + '</h3>'
-        elif re.match('## (.*)', line) is not None:
-            line = '<h2>' + line[3:] + '</h2>'
-        elif re.match('# (.*)', line) is not None:
-            line = '<h1>' + line[2:] + '</h1>'
+        header_level = count_header_level(line)
+        if header_level > 0:
+            line = '<h' + str(header_level) + '>' + line[header_level + 1:] + '</h' + str(header_level) + '>'
         m = re.match(r'\* (.*)', line)
         if m:
             if not in_list:
