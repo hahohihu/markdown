@@ -1,20 +1,15 @@
 import re
 
-def format_bold(curr):
-    m = re.match('(.*)__(.*)__(.*)', curr)
-    if m:
+def parse_underscores(curr):
+    while m := re.match('(.*)__(.*?)__(.*)', curr):
         curr = m.group(1) + '<strong>' + m.group(2) + '</strong>' + m.group(3)
-    return curr
-
-def format_italic(curr):
-    m = re.match('(.*)_(.*)_(.*)', curr)
-    if m:
+    # these are coupled - parsing __ must precede _
+    while m := re.match('(.*)_(.*?)_(.*)', curr):
         curr = m.group(1) + '<em>' + m.group(2) + '</em>' + m.group(3)
     return curr
 
 def format_list_item(curr):
-    curr = format_bold(curr)
-    curr = format_italic(curr)
+    curr = parse_underscores(curr)
     return '<li>' + curr + '</li>'
 
 def parse(markdown):
@@ -50,8 +45,7 @@ def parse(markdown):
         m = re.match('<h|<ul|<p|<li', line)
         if not m:
             line = '<p>' + line + '</p>'
-        line = format_bold(line)
-        line = format_italic(line)
+        line = parse_underscores(line)
         if in_list_append:
             line = '</ul>' + line
             in_list_append = False

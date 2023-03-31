@@ -100,8 +100,8 @@ class MarkdownTest(unittest.TestCase):
             "<h1>Start a list</h1><ul><li>Item 1</li><li>Item 2</li></ul><p>End a list</p>",
         )
 
-    # def test_multiple_bold(self):
-    #     self.assertEqual(
-    #         parse("This __word__ is bold. So is __this__."),
-    #         "<p>This <strong>word</strong> is bold. So is <strong>this</strong>.</p>",
-    #     )
+    def test_multiple_bold(self):
+        self.assertEqual(
+            parse("This __word__ is bold. So is __this__."),
+            "<p>This <strong>word</strong> is bold. So is <strong>this</strong>.</p>",
+        )
