@@ -9,7 +9,6 @@ def parse_underscores(curr):
     return curr
 
 def format_list_item(curr):
-    curr = parse_underscores(curr)
     return '<li>' + curr + '</li>'
 
 # returns header level - 0 if it isn't a header
@@ -22,30 +21,22 @@ def parse(markdown):
     lines = markdown.split('\n')
     res = ''
     in_list = False
-    in_list_append = False
     for line in lines:
+        line = parse_underscores(line)
         header_level = count_header_level(line)
         if header_level > 0:
             line = '<h' + str(header_level) + '>' + line[header_level + 1:] + '</h' + str(header_level) + '>'
-        m = re.match(r'\* (.*)', line)
-        if m:
+        elif m := re.match(r'\* (.*)', line):
             if not in_list:
                 in_list = True
                 line = '<ul>' + format_list_item(m.group(1))
             else:
                 line = format_list_item(m.group(1))
         else:
-            if in_list:
-                in_list_append = True
-                in_list = False
-
-        m = re.match('<h|<ul|<p|<li', line)
-        if not m:
             line = '<p>' + line + '</p>'
-        line = parse_underscores(line)
-        if in_list_append:
-            line = '</ul>' + line
-            in_list_append = False
+            if in_list:
+                line = '</ul>' + line
+                in_list = False
         res += line
     if in_list:
         res += '</ul>'
