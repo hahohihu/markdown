@@ -19,7 +19,7 @@ def parse_header(curr: str) -> Optional[str]:
     return None
 
 
-def parse(markdown: str):
+def parse(markdown: str) -> str:
     lines = markdown.split('\n')
     res = ''
     in_list = False
