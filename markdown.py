@@ -18,7 +18,7 @@ def parse(markdown: str):
         nonheader = line.lstrip('#')
         header_len = len(line) - len(nonheader)
         if header_len in range(1, 7):
-            line = f'<h{header_len}>' + nonheader + f'</h{header_len}>'
+            line = f'<h{header_len}>' + nonheader.lstrip() + f'</h{header_len}>'
         elif m := re.match(r'\* (.*)', line):
             line = f'<li>{m.group(1)}</li>'
             if not in_list:
