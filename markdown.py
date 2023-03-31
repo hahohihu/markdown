@@ -6,20 +6,20 @@ def parse(markdown):
     res = ''
     in_list = False
     in_list_append = False
-    for i in lines:
-        if re.match('###### (.*)', i) is not None:
-            i = '<h6>' + i[7:] + '</h6>'
-        elif re.match('##### (.*)', i) is not None:
-            i = '<h5>' + i[6:] + '</h5>'
-        elif re.match('#### (.*)', i) is not None:
-            i = '<h4>' + i[5:] + '</h4>'
-        elif re.match('### (.*)', i) is not None:
-            i = '<h3>' + i[4:] + '</h3>'
-        elif re.match('## (.*)', i) is not None:
-            i = '<h2>' + i[3:] + '</h2>'
-        elif re.match('# (.*)', i) is not None:
-            i = '<h1>' + i[2:] + '</h1>'
-        m = re.match(r'\* (.*)', i)
+    for line in lines:
+        if re.match('###### (.*)', line) is not None:
+            line = '<h6>' + line[7:] + '</h6>'
+        elif re.match('##### (.*)', line) is not None:
+            line = '<h5>' + line[6:] + '</h5>'
+        elif re.match('#### (.*)', line) is not None:
+            line = '<h4>' + line[5:] + '</h4>'
+        elif re.match('### (.*)', line) is not None:
+            line = '<h3>' + line[4:] + '</h3>'
+        elif re.match('## (.*)', line) is not None:
+            line = '<h2>' + line[3:] + '</h2>'
+        elif re.match('# (.*)', line) is not None:
+            line = '<h1>' + line[2:] + '</h1>'
+        m = re.match(r'\* (.*)', line)
         if m:
             if not in_list:
                 in_list = True
@@ -36,7 +36,7 @@ def parse(markdown):
                     curr = m1.group(1) + '<em>' + m1.group(2) + \
                         '</em>' + m1.group(3)
                     is_italic = True
-                i = '<ul><li>' + curr + '</li>'
+                line = '<ul><li>' + curr + '</li>'
             else:
                 is_bold = False
                 is_italic = False
@@ -53,25 +53,25 @@ def parse(markdown):
                 if is_italic:
                     curr = m1.group(1) + '<em>' + m1.group(2) + \
                         '</em>' + m1.group(3)
-                i = '<li>' + curr + '</li>'
+                line = '<li>' + curr + '</li>'
         else:
             if in_list:
                 in_list_append = True
                 in_list = False
 
-        m = re.match('<h|<ul|<p|<li', i)
+        m = re.match('<h|<ul|<p|<li', line)
         if not m:
-            i = '<p>' + i + '</p>'
-        m = re.match('(.*)__(.*)__(.*)', i)
+            line = '<p>' + line + '</p>'
+        m = re.match('(.*)__(.*)__(.*)', line)
         if m:
-            i = m.group(1) + '<strong>' + m.group(2) + '</strong>' + m.group(3)
-        m = re.match('(.*)_(.*)_(.*)', i)
+            line = m.group(1) + '<strong>' + m.group(2) + '</strong>' + m.group(3)
+        m = re.match('(.*)_(.*)_(.*)', line)
         if m:
-            i = m.group(1) + '<em>' + m.group(2) + '</em>' + m.group(3)
+            line = m.group(1) + '<em>' + m.group(2) + '</em>' + m.group(3)
         if in_list_append:
-            i = '</ul>' + i
+            line = '</ul>' + line
             in_list_append = False
-        res += i
+        res += line
     if in_list:
         res += '</ul>'
     return res
