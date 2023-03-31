@@ -1,6 +1,23 @@
 import re
 
 
+def format_list_item(curr):
+    is_bold = False
+    is_italic = False
+    m1 = re.match('(.*)__(.*)__(.*)', curr)
+    if m1:
+        is_bold = True
+    m1 = re.match('(.*)_(.*)_(.*)', curr)
+    if m1:
+        is_italic = True
+    if is_bold:
+        curr = m1.group(1) + '<strong>' + \
+            m1.group(2) + '</strong>' + m1.group(3)
+    if is_italic:
+        curr = m1.group(1) + '<em>' + m1.group(2) + \
+            '</em>' + m1.group(3)
+    return '<li>' + curr + '</li>'
+
 def parse(markdown):
     lines = markdown.split('\n')
     res = ''
@@ -23,37 +40,9 @@ def parse(markdown):
         if m:
             if not in_list:
                 in_list = True
-                is_bold = False
-                is_italic = False
-                curr = m.group(1)
-                m1 = re.match('(.*)__(.*)__(.*)', curr)
-                if m1:
-                    curr = m1.group(1) + '<strong>' + \
-                        m1.group(2) + '</strong>' + m1.group(3)
-                    is_bold = True
-                m1 = re.match('(.*)_(.*)_(.*)', curr)
-                if m1:
-                    curr = m1.group(1) + '<em>' + m1.group(2) + \
-                        '</em>' + m1.group(3)
-                    is_italic = True
-                line = '<ul><li>' + curr + '</li>'
+                line = '<ul>' + format_list_item(m.group(1))
             else:
-                is_bold = False
-                is_italic = False
-                curr = m.group(1)
-                m1 = re.match('(.*)__(.*)__(.*)', curr)
-                if m1:
-                    is_bold = True
-                m1 = re.match('(.*)_(.*)_(.*)', curr)
-                if m1:
-                    is_italic = True
-                if is_bold:
-                    curr = m1.group(1) + '<strong>' + \
-                        m1.group(2) + '</strong>' + m1.group(3)
-                if is_italic:
-                    curr = m1.group(1) + '<em>' + m1.group(2) + \
-                        '</em>' + m1.group(3)
-                line = '<li>' + curr + '</li>'
+                line = format_list_item(m.group(1))
         else:
             if in_list:
                 in_list_append = True
