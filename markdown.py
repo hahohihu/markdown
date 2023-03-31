@@ -27,11 +27,10 @@ def parse(markdown):
         if header_level > 0:
             line = '<h' + str(header_level) + '>' + line[header_level + 1:] + '</h' + str(header_level) + '>'
         elif m := re.match(r'\* (.*)', line):
+            line = format_list_item(m.group(1))
             if not in_list:
                 in_list = True
-                line = '<ul>' + format_list_item(m.group(1))
-            else:
-                line = format_list_item(m.group(1))
+                line = '<ul>' + line
         else:
             line = '<p>' + line + '</p>'
             if in_list:
