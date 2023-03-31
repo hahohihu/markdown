@@ -9,26 +9,16 @@ def parse_underscores(curr: str):
         curr = m.group(1) + '<em>' + m.group(2) + '</em>' + m.group(3)
     return curr
 
-
-def count_header_level(line: str):
-    """ 
-    returns header level - 0 if it isn't a header
-    """
-    level = len(line) - len(line.lstrip('#'))
-    # level > 6 is invalid so treat it as a non-header
-    return level % 7
-
-
 def parse(markdown: str):
     lines = markdown.split('\n')
     res = ''
     in_list = False
     for line in lines:
         line = parse_underscores(line)
-        header_level = count_header_level(line)
-        if header_level > 0:
-            line = '<h' + str(header_level) + '>' + \
-                line[header_level + 1:] + '</h' + str(header_level) + '>'
+        nonheader = line.lstrip('#')
+        header_len = len(line) - len(nonheader)
+        if header_len in range(1, 7):
+            line = f'<h{header_len}>' + nonheader + f'</h{header_len}>'
         elif m := re.match(r'\* (.*)', line):
             line = f'<li>{m.group(1)}</li>'
             if not in_list:
