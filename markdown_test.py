@@ -105,3 +105,9 @@ class MarkdownTest(unittest.TestCase):
             parse("This __word__ is bold. So is __this__."),
             "<p>This <strong>word</strong> is bold. So is <strong>this</strong>.</p>",
         )
+
+    def test_header_after_list(self):
+        self.assertEqual(
+            parse("* Item\n# Heading"),
+            "<ul><li>Item</li></ul><h1>Heading</h1>",
+        )

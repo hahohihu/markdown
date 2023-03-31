@@ -10,8 +10,9 @@ Refactoring notes in broad strokes:
 5. Simplified control flow
 6. Added some type hints
 
-Non-refactoring:
-1. Fixed a bug in the original code where only one pair of underscores could be correctly parsed
+Functional changes:
+1. Fixed a bug where only one pair of underscores could be correctly parsed
+2. Fixed a bug where lists would not be closed if a header followed them
 """
 
 def parse_underscores(curr: str) -> str:
@@ -37,18 +38,19 @@ def parse(markdown: str) -> str:
     in_list = False
     for line in lines:
         line = parse_underscores(line)
-        if header := parse_header(line):
-            line = header
-        elif m := re.match(r'\* (.*)', line):
+        if m := re.match(r'\* (.*)', line):
             line = f'<li>{m.group(1)}</li>'
             if not in_list:
                 in_list = True
                 line = '<ul>' + line
         else:
-            line = '<p>' + line + '</p>'
             if in_list:
-                line = '</ul>' + line
+                res += '</ul>'
                 in_list = False
+            if header := parse_header(line):
+                line = header
+            else:
+                line = '<p>' + line + '</p>'
         res += line
     if in_list:
         res += '</ul>'
